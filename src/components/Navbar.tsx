@@ -43,28 +43,27 @@ const Navbar = () => {
     }
   }, []);
 
-const [activeSection, setActiveSection] = useState<string>("#home");
+  const [activeLink, setActiveLink] = useState<string>("#home");
   // Scroll detection for active section
+  const handleScroll = () => {
+    const currentSection = navlinks.find((link) => {
+      const section = document.querySelector(link.url);
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= 100 && rect.bottom > 100;
+      }
+      return false;
+    });
+
+    if (currentSection) {
+      setActiveLink(currentSection.url);
+    }
+  };
+
   useEffect(() => {
-    const handleSectionHighlight = () => {
-      const sections = navlinks.map((link) => document.querySelector(link.url));
-      const scrollPosition = window.scrollY + window.innerHeight / 2; // Adjust for offset
-
-      sections.forEach((section, index) => {
-        if (section) {
-          const offsetTop = section.getBoundingClientRect().top + window.scrollY;
-          const offsetBottom = offsetTop + section.clientHeight;
-
-          if (scrollPosition >= offsetTop && scrollPosition <= offsetBottom) {
-            setActiveSection(navlinks[index].url);
-          }
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleSectionHighlight);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleSectionHighlight);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -78,9 +77,11 @@ const [activeSection, setActiveSection] = useState<string>("#home");
         {/* desktop items */}
         <nav>
           <ul className='md:flex hidden gap-[40px]'>
-            {navlinks.map((item) => (
-              <li key={item.url}>
-                <Link href={item.url} className={`font-secondary text-white text-[15px] leading-[17.61px] font-medium ${activeSection === item.url ? "text-blue-700 hover:text-blue-700" : ""}`}>{item.label}</Link>
+            {navlinks.map((link) => (
+              <li key={link.url}>
+                <Link href={link.url} className={`hover:text-blue-600 ${activeLink === link.url ? "text-blue-700" : ""}`}>
+                  {link.label}
+                </Link>
               </li>
             ))}
           </ul>
@@ -102,10 +103,10 @@ const [activeSection, setActiveSection] = useState<string>("#home");
       {/* mobile navbar items */}
       <nav className={`md:hidden ${open ? 'block' : 'hidden'} absolute top-[77px] left-0 w-full h-screen bg-[#BD1F17] text-white`}>
         <ul className='space-y-4 py-4'>
-          {navlinks.map((item) => (
-            <li key={item.url} onClick={() => setOpen(false)} className='text-center'>
-              <Link href={item.url} className={`block px-4 py-2 text-lg ${activeSection === item.url ? "text-blue-700 hover:text-blue-700" : ""}`}>
-                {item.label}
+          {navlinks.map((link) => (
+            <li key={link.url} onClick={() => setOpen(false)} className='text-center'>
+              <Link href={link.url} className={`hover:text-blue-600 ${activeLink === link.url ? "text-blue-700" : ""}`}>
+                {link.label}
               </Link>
             </li>
           ))}
@@ -116,4 +117,3 @@ const [activeSection, setActiveSection] = useState<string>("#home");
 }
 
 export default Navbar;
-
