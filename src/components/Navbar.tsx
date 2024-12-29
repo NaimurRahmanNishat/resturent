@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { IoClose, IoMenu } from 'react-icons/io5';
 import logo from "../../public/logo.png";
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 
 
 interface NavLink {
@@ -22,7 +21,6 @@ const navlinks: NavLink[] = [
 ]
 
 const Navbar = () => {
-  const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(false);
   const handleClick = () => {
     setOpen(!open);
@@ -82,7 +80,7 @@ const [activeSection, setActiveSection] = useState<string>("#home");
           <ul className='md:flex hidden gap-[40px]'>
             {navlinks.map((item) => (
               <li key={item.url}>
-                <Link href={item.url} className={`font-secondary text-white text-[15px] leading-[17.61px] font-medium ${pathname === item.url ? "text-blue-700 hover:text-blue-700" : ""}`}>{item.label}</Link>
+                <Link href={item.url} className={`font-secondary text-white text-[15px] leading-[17.61px] font-medium ${activeSection === item.url ? "text-blue-700 hover:text-blue-700" : ""}`}>{item.label}</Link>
               </li>
             ))}
           </ul>
@@ -106,7 +104,7 @@ const [activeSection, setActiveSection] = useState<string>("#home");
         <ul className='space-y-4 py-4'>
           {navlinks.map((item) => (
             <li key={item.url} onClick={() => setOpen(false)} className='text-center'>
-              <Link href={item.url} className={`block px-4 py-2 text-lg ${pathname === item.url ? "text-blue-700 hover:text-blue-700" : ""}`}>
+              <Link href={item.url} className={`block px-4 py-2 text-lg ${activeSection === item.url ? "text-blue-700 hover:text-blue-700" : ""}`}>
                 {item.label}
               </Link>
             </li>
